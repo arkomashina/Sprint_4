@@ -2,15 +2,6 @@ package PageObjects;
 
 import org.junit.Assert;
 import org.openqa.selenium.*;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.text.DateFormat;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
-import java.util.Locale;
 
 public class OrderPage {
     private WebDriver driver;
