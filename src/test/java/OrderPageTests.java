@@ -12,8 +12,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-import java.time.Duration;
-
 
 @RunWith(Parameterized.class)
 public class OrderPageTests {
@@ -23,39 +21,37 @@ public class OrderPageTests {
     private final String address;
     private final String metro;
     private final String phone;
-    private final String browserType;
     private final boolean isOrderButtonInHeader;
 
-    public OrderPageTests(String name, String surname, String address, String metro, String phone, String browserType, boolean isOrderButtonInHeader) {
+    public OrderPageTests(String name, String surname, String address, String metro, String phone, boolean isOrderButtonInHeader) {
         this.name = name;
         this.surname = surname;
         this.address = address;
         this.metro = metro;
         this.phone = phone;
-        this.browserType = browserType;
         this.isOrderButtonInHeader = isOrderButtonInHeader;
     }
 
     @Parameterized.Parameters
     public static Object[][] values () {
         return new Object[][] {
-                {"Аркадий", "Илюхин", "Пятницкое шоссе 38", "Пятницкое шоссе", "89211111112", "chrome", true},
-                {"Мария", "Петрова", "Ленинградский проспект 45", "Сокол", "89222222222", "firefox", false}
+                {"Аркадий", "Илюхин", "Пятницкое шоссе 38", "Пятницкое шоссе", "89211111112", true},
+                {"Мария", "Петрова", "Ленинградский проспект 45", "Сокол", "89222222222", false}
         };
     }
 
     @Before
     public void setUp() {
-        if (browserType.equals("chrome")) {
-            driver = new ChromeDriver();
-        } else {
+        String browser = System.getProperty("browser", "chrome");
+        if ("firefox".equalsIgnoreCase(browser)) {
             driver = new FirefoxDriver();
+        } else {
+            driver = new ChromeDriver();
         }
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
     }
 
     @Test
-    public void orderSamokatFromHeaderButtonTest() {
+    public void orderSamokatFromButtonTest() {
         driver.get("https://qa-scooter.praktikum-services.ru/");
         MainPage mainPage = new MainPage(driver);
         OrderPage orderPage = new OrderPage(driver);
@@ -63,8 +59,8 @@ public class OrderPageTests {
         if (isOrderButtonInHeader) {
             mainPage.clickOnOrderButtonInHeader();
         } else {
+            ((JavascriptExecutor) driver).executeScript("window.scrollTo(0, document.body.scrollHeight);");
             WebElement element = driver.findElement(mainPage.getOrderButtonInBody());
-            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", element);
             mainPage.clickOnOrderButtonInBody();
         }
 
